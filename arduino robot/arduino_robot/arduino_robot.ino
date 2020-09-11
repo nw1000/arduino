@@ -46,6 +46,7 @@ long randomNumber;
 bool power = false;
 int mode = 1;
 bool safe = false;
+bool forward = false;
 
 void setup() {
   // put your setup code here, to run once:
@@ -61,6 +62,15 @@ void walk(){
    delay(20);
    digitalWrite(leftMotor, LOW);
    digitalWrite(rightMotor, LOW);
+}
+
+void longWalk(){
+   digitalWrite(leftMotor, HIGH);
+   digitalWrite(rightMotor, HIGH);
+   delay(400);
+   digitalWrite(leftMotor, LOW);
+   digitalWrite(rightMotor, LOW);
+   
 }
 
 void turnRight(){
@@ -96,6 +106,8 @@ void turn(){
 
 void loop() {
   // put your main code here, to run repeatedly:
+  distance = sr04.Distance();
+  forward = false;
   if (irrecv.decode(&results)){
      
      switch(results.value){
@@ -109,12 +121,10 @@ void loop() {
                         mode = 3; break;
         case KEY_VOL_ADD:
                          if (mode == 3){
-                            walk();
+                            longWalk();
                          }
                          else if (mode == 2){
-                            if (safe = true){
-                              walk()
-                            }
+                            forward = true;
                          }
                          break;
         case KEY_FAST_FORWARD:
@@ -133,8 +143,9 @@ void loop() {
   
  
   if (power ==  true){
+    
     if (mode == 1){ 
-      distance = sr04.Distance();
+      
       //Serial.println(distance);
       delay(1);
 
@@ -144,18 +155,17 @@ void loop() {
       else {
           walk();
       }
+    }
     if (mode == 2){
-      if (distance <= 50){
-        safe = false;
-      }
-      else{
-        safe = true;
+      if (distance >= 20 and forward == true){
+        longWalk();
+        
       }
     }
-    if (mode == 3){
+    /*if (mode == 3){
       //write walking here
-    }
-    }
+    }*/
+    
    
   }
 
