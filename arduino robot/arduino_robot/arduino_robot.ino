@@ -3,6 +3,11 @@
 
 #include <SR04.h>
 
+//remember to change the sensing if it is completely too narrow
+
+#define turnDistance 10 //adjust to get the distance of which direction to turn
+#define frontDistance 50 //adjust to get how far right
+
 #define KEY_POWER (0xFFA25D)
 #define KEY_FUNC_STOP (0xFFE21D)
 #define KEY_VOL_ADD (0xFF629D)
@@ -33,8 +38,20 @@
 #define TRIG_PIN 12
 #define ECHO_PIN 10
 
+#define RIGHT_TRIG_PIN 2
+#define RIGHT_ECHO_PIN 3
+
+#define LEFT_TRIG_PIN 4
+#define LEFT_ECHO_PIN 5
+
 SR04 sr04 = SR04(ECHO_PIN,TRIG_PIN);
 long distance;
+
+SR04 right_sr04 = SR04(RIGHT_ECHO_PIN,RIGHT_TRIG_PIN);
+long rightDistance;
+
+SR04 left_sr04 = SR04(LEFT_ECHO_PIN,LEFT_TRIG_PIN);
+long leftDistance;
 
 int reciever = 11;
 
@@ -89,24 +106,36 @@ void turnLeft(){
 
 void turn(){
 
-  randomNumber = random(1, 3);
+ // randomNumber = random(1, 3);
 
   digitalWrite(leftMotor, LOW);
   digitalWrite(rightMotor, LOW);
-
-  if(randomNumber == 1){
+  if(rightDistance <= turnDistance and leftDistance <= turnDistance) {
+    turnRight();
+    Serial.println("space too narrow"); 
+  }
+  if(rightDistance <= turnDistance) {
+    turnRight();
+    Serial.println("turning right");}
+  if(leftDistance <= turnDistance) {
+    turnLeft();
+    Serial.println("turning left");
+  }
+  /*if(randomNumber == 1){
     turnRight();
     //Serial.println("turning right");
   }
   else if(randomNumber == 2){
     turnLeft();
     //Serial.println("turning left");
-  }
+  }*/
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
   distance = sr04.Distance();
+  rightDistance = right_sr04.Distance();
+  leftDistance = left_sr04.Distance();
   forward = false;
   if (irrecv.decode(&results)){
      
@@ -149,7 +178,7 @@ void loop() {
       //Serial.println(distance);
       delay(1);
 
-      if (distance <= 50){
+      if (distance <= frontDistance){
           turn();
       }
       else {
