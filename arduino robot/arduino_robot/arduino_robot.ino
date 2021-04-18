@@ -110,14 +110,15 @@ while (leftDistance <= rightDistance);
 }
 
 void turnLeft(){
-  do {
+  if (rightDistance <= leftDistance) {
   rightDistance = right_sr04.Distance(); 
   leftDistance = left_sr04.Distance();
   digitalWrite(rightMotor, LOW);
   digitalWrite(leftMotor, HIGH);
 }
-while (rightDistance <= leftDistance); 
-  digitalWrite(leftMotor, LOW);
+  else {
+    off();
+  }
 
 }
 
@@ -125,7 +126,6 @@ void turn(){
 
  Serial.println("turning");
  // randomNumber = random(1, 3);
- off();
   if(leftDistance <= rightDistance) {
     Serial.println("turning right");
     turnRight();
