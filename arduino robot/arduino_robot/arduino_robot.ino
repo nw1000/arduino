@@ -98,17 +98,25 @@ void longWalk(){
 }
 
 void turnRight(){
+  do {
+  rightDistance = right_sr04.Distance();
+  leftDistance = left_sr04.Distance();
   digitalWrite(leftMotor, LOW);
   digitalWrite(rightMotor, HIGH);
-  delay(500);
+}
+while (leftDistance <= rightDistance); 
   digitalWrite(rightMotor, LOW);
 
 }
 
 void turnLeft(){
+  do {
+  rightDistance = right_sr04.Distance(); 
+  leftDistance = left_sr04.Distance();
   digitalWrite(rightMotor, LOW);
   digitalWrite(leftMotor, HIGH);
-  delay(500);
+}
+while (rightDistance <= leftDistance); 
   digitalWrite(leftMotor, LOW);
 
 }
@@ -119,7 +127,7 @@ void turn(){
  // randomNumber = random(1, 3);
  off();
   if(leftDistance <= rightDistance) {
-    Serial.println("turning right")
+    Serial.println("turning right");
     turnRight();
   }
   else{
