@@ -8,7 +8,7 @@
 
 //remember to change the sensing if it is completely too narrow
 
-#define turnDistance 5 //adjust to get the distance of which direction to turn
+
 #define frontDistance 50 //adjust to get how far right
 
 #define KEY_POWER (0xFFA25D)
@@ -118,31 +118,15 @@ void turn(){
  Serial.println("turning");
  // randomNumber = random(1, 3);
  off();
-  if(rightDistance <= turnDistance and leftDistance <= turnDistance) {
-    Serial.println("space too narrow"); 
-    turnLeft();
-  }
-  else if(rightDistance <= turnDistance) {
-    Serial.println("turning right");
+  if(leftDistance <= rightDistance) {
+    Serial.println("turning right")
     turnRight();
-}
-  else if(leftDistance <= turnDistance) {
+  }
+  else{
     Serial.println("turning left");
     turnLeft();
-    
-  }
-  else {
-    Serial.println("havent done any turning");
-  }
-  /*if(randomNumber == 1){
-    turnRight();
-    //Serial.println("turning right");
-  }
-  else if(randomNumber == 2){
-    turnLeft();
-    //Serial.println("turning left");
-  }*/
-  Serial.println("turned");
+}
+  
 }
 
 void loop() {
