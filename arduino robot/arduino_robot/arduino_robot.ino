@@ -8,7 +8,7 @@
 
 //remember to change the sensing if it is completely too narrow
 
-
+#define sideDistance 6 //adjust to get the right sensistivity for how close it can get to the side
 #define frontDistance 50 //adjust to get how far right
 
 #define KEY_POWER (0xFFA25D)
@@ -98,23 +98,19 @@ void longWalk(){
 }
 
 void turnRight(){
-  do {
-  rightDistance = right_sr04.Distance();
-  leftDistance = left_sr04.Distance();
-  digitalWrite(leftMotor, LOW);
-  digitalWrite(rightMotor, HIGH);
+  if (leftDistance <= rightDistance) {
+    digitalWrite(leftMotor, LOW);
+    digitalWrite(rightMotor, HIGH);
 }
-while (leftDistance <= rightDistance); 
-  digitalWrite(rightMotor, LOW);
-
+  else {
+    off();
+  }
 }
 
 void turnLeft(){
   if (rightDistance <= leftDistance) {
-  rightDistance = right_sr04.Distance(); 
-  leftDistance = left_sr04.Distance();
-  digitalWrite(rightMotor, LOW);
-  digitalWrite(leftMotor, HIGH);
+    digitalWrite(rightMotor, LOW);
+    digitalWrite(leftMotor, HIGH);
 }
   else {
     off();
@@ -189,6 +185,12 @@ void loop() {
       if (distance <= frontDistance){
           //Serial.println("turning");
           turn();
+      }
+      else if (leftDistance <= sideDistance){
+          turnRight();
+      }
+      else if (rightDistance <= sideDistance) {
+          turnLeft();
       }
       else {
           walk();
