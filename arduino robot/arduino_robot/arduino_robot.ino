@@ -9,7 +9,7 @@
 //remember to change the sensing if it is completely too narrow
 
 #define sideDistance 6 //adjust to get the right sensistivity for how close it can get to the side
-#define frontDistance 50 //adjust to get how far right
+#define frontDistance 30 //adjust to get how far right
 
 #define KEY_POWER (0xFFA25D)
 #define KEY_FUNC_STOP (0xFFE21D)
@@ -43,7 +43,6 @@
 
 #define RIGHT_TRIG_PIN 2
 #define RIGHT_ECHO_PIN 3
-
 #define LEFT_TRIG_PIN 4
 #define LEFT_ECHO_PIN 5
 
@@ -68,8 +67,11 @@ int mode = 1;
 bool safe = false;
 bool forward = false;
 
+bool turningRight = false;
+bool turningLeft = false;
+
 void setup() {
-  // put your setup code here, to run once:
+  //put your setup code here, to run once:
   Serial.begin(9600);
   irrecv.enableIRIn();
   pinMode(leftMotor, OUTPUT);
@@ -97,46 +99,70 @@ void longWalk(){
    
 }
 
-void turnRight(){
-  if (leftDistance <= rightDistance) {
-    digitalWrite(leftMotor, LOW);
-    digitalWrite(rightMotor, HIGH);
+void slightRight(){
+  digitalWrite(leftMotor, LOW);
+  digitalWrite(rightMotor, HIGH);
+  delay(100);
+  off();
 }
-  else {
+
+void slightLeft(){
+  digitalWrite(rightMotor, LOW);
+  digitalWrite(leftMotor, HIGH);
+  delay(100);
+  off();
+}
+
+void turnRight(){
+  digitalWrite(leftMotor, LOW);
+  digitalWrite(rightMotor, HIGH);
+  if (turningRight == false) {
+    turningRight = true;
+  }
+  else if (rightDistance <= leftDistance) {
+    turningRight = false;
     off();
   }
 }
 
 void turnLeft(){
-  if (rightDistance <= leftDistance) {
-    digitalWrite(rightMotor, LOW);
-    digitalWrite(leftMotor, HIGH);
-}
-  else {
+  digitalWrite(rightMotor, LOW);
+  digitalWrite(leftMotor, HIGH);
+  if (turningLeft == false) {
+    turningLeft = true;
+  }
+  else if (leftDistance <= rightDistance) {
+    turningLeft = false;
     off();
   }
-
 }
 
 void turn(){
 
  Serial.println("turning");
  // randomNumber = random(1, 3);
-  if(leftDistance <= rightDistance) {
+  if(turningRight == true) {
     Serial.println("turning right");
     turnRight();
   }
-  else{
+  else if (turningLeft == false and leftDistance <= rightDistance) {
+    turnRight();
+  }
+  else if (turningLeft == true) {
     Serial.println("turning left");
     turnLeft();
+  }
+  else if (turningRight == false and rightDistance <= leftDistance) {
+    turnLeft();
+  }
 }
   
-}
+
 
 void loop() {
   // put your main code here, to run repeatedly:
   rightDistance = right_sr04.Distance();
-  distance = sr04.Distance();  
+  distance = sr04.Distance();
   leftDistance = left_sr04.Distance();
   Serial.println(leftDistance);
   forward = false;
@@ -170,29 +196,31 @@ void loop() {
                          }break;
      }
      irrecv.resume();
-     } 
+     }
      
 
   
  
   if (power ==  true){
     
-    if (mode == 1){ 
-      
-      //Serial.println(distance);
+    if (mode == 1){     
+
       delay(1);
 
       if (distance <= frontDistance){
-          //Serial.println("turning");
+          Serial.println("turning");
           turn();
       }
       else if (leftDistance <= sideDistance){
-          turnRight();
+          Serial.println("slight right");
+          slightRight();
       }
       else if (rightDistance <= sideDistance) {
-          turnLeft();
+          Serial.println("slight left");
+          slightLeft();
       }
       else {
+          Serial.println("driving striaght");
           walk();
       }
     }
