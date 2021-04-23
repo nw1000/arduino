@@ -6,8 +6,6 @@
 
 #include <SR04.h>
 
-//remember to change the sensing if it is completely too narrow
-
 #define sideDistance 6 //adjust to get the right sensistivity for how close it can get to the side
 #define frontDistance 30 //adjust to get how far right
 
