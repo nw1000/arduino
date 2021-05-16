@@ -111,6 +111,20 @@ void slightLeft(){
   off();
 }
 
+void 2Right(){
+  digitalWrite(leftMotor, LOW);
+  digitalWrite(rightMotor, HIGH);
+  delay(300);
+  off();
+}
+
+void 2Left(){
+  digitalWrite(rightMotor, LOW);
+  digitalWrite(leftMotor, HIGH);
+  delay(300);
+  off();
+}
+
 void turnRight(){
   digitalWrite(leftMotor, LOW);
   digitalWrite(rightMotor, HIGH);
@@ -186,11 +200,11 @@ void loop() {
                          break;
         case KEY_FAST_FORWARD:
                         if (mode == 3 or mode == 2){
-                            turnRight();
+                            2Right();
                          }break;
         case KEY_FAST_BACK:
                         if (mode == 3 or mode == 2){
-                            turnLeft();
+                            2Left();
                          }break;
      }
      irrecv.resume();
@@ -201,7 +215,7 @@ void loop() {
  
   if (power ==  true){
     
-    if (mode == 1){     
+    if (mode == 1){
 
       delay(1);
 
@@ -227,6 +241,7 @@ void loop() {
         longWalk();
         
       }
+      forward = false;
     }
     /*if (mode == 3){
       //write walking here
