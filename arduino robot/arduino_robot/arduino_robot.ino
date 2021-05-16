@@ -33,8 +33,10 @@
 #define KEY_REPEAT (0xFFFFFFFF)
 #define KEY_NUM 21
 
-#define leftMotor 7
-#define rightMotor 8
+#define leftMotorF 7
+#define leftMotorB 9
+#define rightMotorF 8
+#define rightMotorB 13
 
 #define TRIG_PIN 12
 #define ECHO_PIN 10
@@ -72,62 +74,68 @@ void setup() {
   //put your setup code here, to run once:
   Serial.begin(9600);
   irrecv.enableIRIn();
-  pinMode(leftMotor, OUTPUT);
-  pinMode(rightMotor, OUTPUT);
+  pinMode(leftMotorF, OUTPUT);
+  pinMode(leftMotorB, OUTPUT);
+  pinMode(rightMotorF, OUTPUT);
+  pinMode(rightMotorB, OUTPUT);
 }
 
 void walk(){
    Serial.println("driving");
-   digitalWrite(leftMotor, HIGH);
-   digitalWrite(rightMotor, HIGH);
+   digitalWrite(leftMotorF, HIGH);
+   digitalWrite(rightMotorF, HIGH);
 }
 
 void off(){
   
-  digitalWrite(leftMotor, LOW);
-  digitalWrite(rightMotor, LOW);
+  digitalWrite(leftMotorF, LOW);
+  digitalWrite(rightMotorF, LOW);
+  digitalWrite(leftMotorB, LOW);
+  digitalWrite(rightMotorB, LOW);
 }
 
 void longWalk(){
-   digitalWrite(leftMotor, HIGH);
-   digitalWrite(rightMotor, HIGH);
+   digitalWrite(leftMotorF, HIGH);
+   digitalWrite(rightMotorF, HIGH);
    delay(400);
-   digitalWrite(leftMotor, LOW);
-   digitalWrite(rightMotor, LOW);
+   digitalWrite(leftMotorF, LOW);
+   digitalWrite(rightMotorF, LOW);
    
 }
 
 void slightRight(){
-  digitalWrite(leftMotor, LOW);
-  digitalWrite(rightMotor, HIGH);
+  off();
+  digitalWrite(leftMotorB, HIGH);
+  digitalWrite(rightMotorF, HIGH);
   delay(100);
   off();
 }
 
 void slightLeft(){
-  digitalWrite(rightMotor, LOW);
-  digitalWrite(leftMotor, HIGH);
+  off();
+  digitalWrite(rightMotorB, HIGH);
+  digitalWrite(leftMotorF, HIGH);
   delay(100);
   off();
 }
 
 void 2Right(){
-  digitalWrite(leftMotor, LOW);
-  digitalWrite(rightMotor, HIGH);
+  digitalWrite(leftMotorB, HIGH);
+  digitalWrite(rightMotorF, HIGH);
   delay(300);
   off();
 }
 
 void 2Left(){
-  digitalWrite(rightMotor, LOW);
-  digitalWrite(leftMotor, HIGH);
+  digitalWrite(rightMotorB, HIGH);
+  digitalWrite(leftMotorF, HIGH);
   delay(300);
   off();
 }
 
 void turnRight(){
-  digitalWrite(leftMotor, LOW);
-  digitalWrite(rightMotor, HIGH);
+  digitalWrite(leftMotorB, HIGH);
+  digitalWrite(rightMotorF, HIGH);
   if (turningRight == false) {
     turningRight = true;
   }
@@ -138,8 +146,8 @@ void turnRight(){
 }
 
 void turnLeft(){
-  digitalWrite(rightMotor, LOW);
-  digitalWrite(leftMotor, HIGH);
+  digitalWrite(rightMotorB, HIGH);
+  digitalWrite(leftMotorF, HIGH);
   if (turningLeft == false) {
     turningLeft = true;
   }
