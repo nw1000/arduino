@@ -1,6 +1,3 @@
-
-
-
 #include <IRremote.h>
 #include <IRremoteInt.h>
 
@@ -33,13 +30,13 @@
 #define KEY_REPEAT (0xFFFFFFFF)
 #define KEY_NUM 21
 
-#define leftMotorF 7
-#define leftMotorB 9
+#define leftMotorF 6
+#define leftMotorB 7
 #define rightMotorF 8
-#define rightMotorB 13
+#define rightMotorB 9
 
-#define TRIG_PIN 12
-#define ECHO_PIN 10
+#define TRIG_PIN 0
+#define ECHO_PIN 1
 
 #define RIGHT_TRIG_PIN 2
 #define RIGHT_ECHO_PIN 3
@@ -55,7 +52,7 @@ long rightDistance;
 SR04 left_sr04 = SR04(LEFT_ECHO_PIN,LEFT_TRIG_PIN);
 long leftDistance;
 
-int reciever = 11;
+int reciever = 10;
 
 IRrecv irrecv(reciever);
 decode_results results;
