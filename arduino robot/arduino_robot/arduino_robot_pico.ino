@@ -100,6 +100,15 @@ void longWalk(){
    
 }
 
+void longBack(){
+   digitalWrite(leftMotorB, HIGH);
+   digitalWrite(rightMotorB, HIGH);
+   delay(400);
+   digitalWrite(leftMotorB, LOW);
+   digitalWrite(rightMotorB, LOW);
+   
+}
+
 void slightRight(){
   off();
   digitalWrite(leftMotorB, HIGH);
@@ -210,6 +219,10 @@ void loop() {
         case KEY_FAST_BACK:
                         if (mode == 3 or mode == 2){
                             2Left();
+                         }break;
+        case KEY_VOL_DE:
+                        if (mode == 3 or mode == 2){
+                            longBack();
                          }break;
      }
      irrecv.resume();
