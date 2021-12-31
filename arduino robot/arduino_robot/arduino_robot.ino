@@ -4,7 +4,7 @@
 #include <SR04.h>
 
 #define sideDistance 6 //adjust to get the right sensistivity for how close it can get to the side
-#define frontDistance 30 //adjust to get how far right
+#define frontDistance 25 //adjust to get how far right
 
 #define KEY_POWER (0xFFA25D)
 #define KEY_FUNC_STOP (0xFFE21D)
@@ -30,13 +30,14 @@
 #define KEY_REPEAT (0xFFFFFFFF)
 #define KEY_NUM 21
 
-#define leftMotorF 7
-#define leftMotorB 9
-#define rightMotorF 8
-#define rightMotorB 13
+#define leftMotorF 7 //Left motor forwards
+#define leftMotorB 9 //Left motor backwards
+#define rightMotorF 8 //Right motor forwards
+#define rightMotorB 13 //Right motor backwards
 
 #define TRIG_PIN 12
 #define ECHO_PIN 10
+
 
 #define RIGHT_TRIG_PIN 2
 #define RIGHT_ECHO_PIN 3
@@ -58,7 +59,7 @@ IRrecv irrecv(reciever);
 decode_results results;
 
 long randomNumber;
-
+bool turning = false;
 bool power = false;
 int mode = 1;
 bool safe = false;
@@ -113,7 +114,7 @@ void slightRight(){
   off();
   digitalWrite(leftMotorB, HIGH);
   digitalWrite(rightMotorF, HIGH);
-  delay(100);
+  delay(50);
   off();
 }
 
@@ -121,44 +122,50 @@ void slightLeft(){
   off();
   digitalWrite(rightMotorB, HIGH);
   digitalWrite(leftMotorF, HIGH);
+  delay(50);
+  off();
+}
+
+void ARight(){
+  digitalWrite(leftMotorB, HIGH);
+  digitalWrite(rightMotorF, HIGH);
   delay(100);
   off();
 }
 
-void 2Right(){
-  digitalWrite(leftMotorB, HIGH);
-  digitalWrite(rightMotorF, HIGH);
-  delay(300);
-  off();
-}
-
-void 2Left(){
+void ALeft(){
   digitalWrite(rightMotorB, HIGH);
   digitalWrite(leftMotorF, HIGH);
-  delay(300);
+  delay(100);
   off();
 }
 
 void turnRight(){
+  off();
+  Serial.println("turning right");
   digitalWrite(leftMotorB, HIGH);
   digitalWrite(rightMotorF, HIGH);
   if (turningRight == false) {
     turningRight = true;
   }
-  else if (rightDistance <= leftDistance) {
+  else if (distance >= frontDistance) {
     turningRight = false;
+    turning = false;
     off();
   }
 }
 
 void turnLeft(){
-  digitalWrite(rightMotorB, HIGH);
-  digitalWrite(leftMotorF, HIGH);
+  off();
+  Serial.println("turning left");
+  digitalWrite(leftMotorB, HIGH);
+  digitalWrite(rightMotorF, HIGH);
   if (turningLeft == false) {
     turningLeft = true;
   }
-  else if (leftDistance <= rightDistance) {
+  else if (distance >= frontDistance) {
     turningLeft = false;
+    turning = false;
     off();
   }
 }
@@ -167,19 +174,24 @@ void turn(){
 
  Serial.println("turning");
  // randomNumber = random(1, 3);
-  if(turningRight == true) {
-    Serial.println("turning right");
-    turnRight();
-  }
-  else if (turningLeft == false and leftDistance <= rightDistance) {
-    turnRight();
-  }
-  else if (turningLeft == true) {
-    Serial.println("turning left");
-    turnLeft();
-  }
-  else if (turningRight == false and rightDistance <= leftDistance) {
-    turnLeft();
+  if(turning == true) {
+
+    if(turningRight == true) {
+      Serial.println("turning right");
+      turnRight();
+    }
+    else if (turningLeft == false and leftDistance <= rightDistance) {
+      Serial.println("turning right");
+      turnRight();
+    }
+    else if (turningLeft == true) {
+      Serial.println("turning left");
+      turnLeft();
+    }
+    else if (turningRight == false and rightDistance <= leftDistance) {
+      Serial.println("turning left");
+      turnLeft();
+    }
   }
 }
   
@@ -190,9 +202,8 @@ void loop() {
   rightDistance = right_sr04.Distance();
   distance = sr04.Distance();
   leftDistance = left_sr04.Distance();
-  Serial.println(leftDistance);
   forward = false;
-  Serial.println("hi");
+  
   if (irrecv.decode(&results)){
      
      switch(results.value){
@@ -214,11 +225,11 @@ void loop() {
                          break;
         case KEY_FAST_FORWARD:
                         if (mode == 3 or mode == 2){
-                            2Right();
+                            ARight();
                          }break;
         case KEY_FAST_BACK:
                         if (mode == 3 or mode == 2){
-                            2Left();
+                            ALeft();
                          }break;
         case KEY_VOL_DE:
                         if (mode == 3 or mode == 2){
@@ -227,30 +238,30 @@ void loop() {
      }
      irrecv.resume();
      }
-     
 
-  
+       
+
  
   if (power ==  true){
     
     if (mode == 1){
-
+      Serial.println("mode 1");
       delay(1);
 
       if (distance <= frontDistance){
-          Serial.println("turning");
+          turning = true;
           turn();
       }
       else if (leftDistance <= sideDistance){
-          Serial.println("slight right");
-          slightRight();
+          
+          //slightRight();
       }
       else if (rightDistance <= sideDistance) {
-          Serial.println("slight left");
-          slightLeft();
+          
+          //slightLeft();
       }
       else {
-          Serial.println("driving striaght");
+          
           walk();
       }
     }
@@ -260,12 +271,7 @@ void loop() {
         
       }
       forward = false;
-    }
-    /*if (mode == 3){
-      //write walking here
-    }*/
-    
-   
+    }   
   }
 
 }
