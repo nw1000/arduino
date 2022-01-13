@@ -125,14 +125,14 @@ void slightLeft(){
   off();
 }
 
-void 2Right(){
+void _Right(){
   digitalWrite(leftMotorB, HIGH);
   digitalWrite(rightMotorF, HIGH);
   delay(300);
   off();
 }
 
-void 2Left(){
+void _Left(){
   digitalWrite(rightMotorB, HIGH);
   digitalWrite(leftMotorF, HIGH);
   delay(300);
@@ -214,11 +214,11 @@ void loop() {
                          break;
         case KEY_FAST_FORWARD:
                         if (mode == 3 or mode == 2){
-                            2Right();
+                            _Right();
                          }break;
         case KEY_FAST_BACK:
                         if (mode == 3 or mode == 2){
-                            2Left();
+                            _Left();
                          }break;
         case KEY_VOL_DE:
                         if (mode == 3 or mode == 2){
